@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Climbable
   layers:
   - Default
   - TransparentFX
@@ -14,17 +15,17 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Environment
+  - SimpleClimbUp
+  - WallClimb
+  - LedgeClimb
+  - Hide
+  - Targeting
+  - Enemy
+  - Platform
+  - Loot
+  - Global
   - 
   - 
   - 

@@ -1,4 +1,7 @@
 sceneSetups:
-- path: Assets/Scenes/SampleScene.unity
+- path: Assets/IronForgeGames/Sandbox/Aaron/Foundry.unity
   isLoaded: 1
   isActive: 1
+- path: Assets/IronForgeGames/System/GameResources/Scenes/Resources.unity
+  isLoaded: 1
+  isActive: 0

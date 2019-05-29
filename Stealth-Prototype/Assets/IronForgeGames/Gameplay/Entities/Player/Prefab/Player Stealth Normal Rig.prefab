@@ -6082,13 +6082,13 @@ MonoBehaviour:
   yOffset: 1
   wallLayerMask:
     serializedVersion: 2
-    m_Bits: 4096
+    m_Bits: 0
   ledgeLayerMask:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 0
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 0
   wallClimbingStartedEvent:
     m_PersistentCalls:
       m_Calls:
@@ -6152,10 +6152,10 @@ MonoBehaviour:
   mountSpeed: 0.2
   ledgeLayerMask:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 0
   wallLayerMask:
     serializedVersion: 2
-    m_Bits: 4096
+    m_Bits: 0
   animationMatchTargetTime: 1.5
   animationMatchTargetEndTime: 0.5
   animationMatchTargetSpeed: 1
@@ -6240,7 +6240,7 @@ MonoBehaviour:
   stealthMode: 0
   stealthObstacleLayerMask:
     serializedVersion: 2
-    m_Bits: 16384
+    m_Bits: 0
   stealthModeEnteredEvent:
     m_PersistentCalls:
       m_Calls:
@@ -6533,7 +6533,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8098380433675182684}
-  m_LocalRotation: {x: 0.073482215, y: -0.09334606, z: 0.006909348, w: 0.99289435}
+  m_LocalRotation: {x: 0.07348221, y: -0.09334605, z: 0.006909347, w: 0.99289435}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
