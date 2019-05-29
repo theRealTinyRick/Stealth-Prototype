@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5992b5e1b0b8cf149b7d514982d35da6, type: 3}
+  m_Name: TestSword2
+  m_EditorClassIdentifier: 
+  name: Test Sword 2
+  type: 3
+  prefab: {fileID: 1827103835812230, guid: 2293d28524d67b5478ff456b16512e44, type: 2}
+  parent: {fileID: 0}

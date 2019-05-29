@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5992b5e1b0b8cf149b7d514982d35da6, type: 3}
+  m_Name: BruteCommon
+  m_EditorClassIdentifier: 
+  name: Brute Enemy
+  type: 2
+  prefab: {fileID: 1617497809565780, guid: 65810bbbec39a354b83e7baf17f2f698, type: 2}
