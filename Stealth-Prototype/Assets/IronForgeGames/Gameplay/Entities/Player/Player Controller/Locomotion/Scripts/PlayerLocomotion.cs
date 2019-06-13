@@ -54,7 +54,8 @@ namespace AH.Max.Gameplay
         [HideInInspector]
         public Vector3 playerOrientationDirectionNotNormalized = new Vector3();
 
-        private Transform LocomotionOrientationController;
+        [HideInInspector]
+        public Transform LocomotionOrientationController;
 
 		private Animator animator;
 		private Rigidbody _rigidbody;
@@ -142,7 +143,6 @@ namespace AH.Max.Gameplay
                 _speed = preparedSpeed;
             }
 
-
             if(InputDriver.LocomotionDirection != Vector3.zero)
             {
 
@@ -221,6 +221,7 @@ namespace AH.Max.Gameplay
             _targetRotation.x = 0;
             _targetRotation.z = 0;
             LocomotionOrientationController.rotation = _targetRotation;
+            InputDriver.cameraLookDirection = LocomotionOrientationController.forward;
         }
 
 		private Quaternion GetOrientationRotation()

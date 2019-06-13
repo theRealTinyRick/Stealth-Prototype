@@ -178,9 +178,9 @@ namespace AH.Max.Gameplay
                 {
                     StartCoroutine(ClimbupLedge());
                 }
-                else if (IsAtNextClimbPoint())
+                else if (IsAtNextClimbPoint() && InputDriver.LocomotionDirection.normalized.z < 0 && !isClimbingUp)
                 {
-                    //Dismount();
+                    Dismount();
                 }
             }
             else
@@ -339,8 +339,6 @@ namespace AH.Max.Gameplay
             yield break;
         }
 
-       
-
         private bool IsAtNextClimbPoint()
         {
             if (isInPosition && isClimbing)
@@ -383,6 +381,12 @@ namespace AH.Max.Gameplay
                         if (CheckWallSlope(_hit))
                         {
                             float horizontalInput = InputDriver.LocomotionDirection.normalized.x < 0 ? -1 : 1;
+
+                            float _dot = Vector3.Dot(transform.forward, InputDriver.cameraLookDirection);
+                            horizontalInput *= _dot;
+
+                            if (horizontalInput < 0) horizontalInput = -1;
+                            if (horizontalInput > 0) horizontalInput = 1;
 
                             Vector3 _obsticalDirection = transform.right * horizontalInput;
                             Vector3 _targetOrigin = transform.position;

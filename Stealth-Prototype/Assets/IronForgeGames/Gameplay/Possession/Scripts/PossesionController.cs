@@ -34,7 +34,6 @@ namespace AH.Max.Gameplay
 
         private StateComponent stateComponent;
 
-        public ParticleSystem fx;
         public List<State> nonusableStates = new List<State>();
         public List <IdentityType> possessableIdentities = new List<IdentityType>();
 
@@ -93,8 +92,6 @@ namespace AH.Max.Gameplay
         {
             if(!possessing && currentlyPossessedEntity == null && target)
             {
-                fx.Play();
-
                 GameObject _spawnedPossessed = SpawnManager.Instance.Spawn(GetPossessedIdentity(target.IdentityType));
                 Entity _spawnedEntity = _spawnedPossessed.GetComponent<Entity>();
 

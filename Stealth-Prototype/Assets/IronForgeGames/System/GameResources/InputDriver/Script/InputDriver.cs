@@ -31,6 +31,8 @@ public class InputDriver : Singleton_MonoBehavior<InputDriver>
     public static Vector3 LocomotionOrientationDirection = new Vector3();
     public static Vector3 RightInputDirection = new Vector3();
 
+    public static Vector3 cameraLookDirection = new Vector3();
+
 	private void Update () 
 	{
         PlayerInputListener();

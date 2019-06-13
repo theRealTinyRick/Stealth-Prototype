@@ -205,6 +205,17 @@ namespace AH.Max.Gameplay
             Vector3 _wallPoint = new Vector3();
             Vector3 _wallNormal = new Vector3();
 
+            Debug.DrawRay(origin, transform.forward, Color.red);
+            if(Physics.Raycast(origin, transform.forward, out hit, 1, ignoreLayer))
+            {
+                _wallPoint = hit.point;
+                _wallNormal = hit.normal;
+            }
+            else
+            {
+                return false;
+            }
+
             Debug.DrawRay(origin, dir * dis, Color.red, 5);
             if (Physics.Raycast(origin, dir, out hit, dis, ignoreLayer))
             {
@@ -248,12 +259,38 @@ namespace AH.Max.Gameplay
                 }
             }
 
-            origin += moveDir * dis;
-            dir = helper.forward;
-            float dis2 = 1;
 
-            Debug.DrawRay(origin, dir * dis2, Color.blue, 5);
-            if (Physics.Raycast(origin, dir, out hit, dis2, ignoreLayer))
+
+            if (!Physics.Raycast(origin, moveDir, 3, ignoreLayer))
+            {
+                origin += moveDir * (dis * 3);
+
+                // check for ledge
+                Debug.DrawRay(origin, helper.forward * 1, Color.blue, 5);
+                if (!Physics.Raycast(origin, helper.forward, out hit, 1, ignoreLayer))
+                {
+                    Vector3 _direction = Vector3.down;
+                    Debug.DrawRay(origin + transform.forward, _direction, Color.green, 10);
+                    if (Physics.Raycast(origin + transform.forward, _direction, out hit, 3.1f, ignoreLayer))
+                    {
+                        if (LayerMaskUtility.IsWithinLayerMask(ledgeLayerMask, hit.collider.gameObject.layer) ||
+                            LayerMaskUtility.IsWithinLayerMask(wallLayerMask, hit.collider.gameObject.layer))
+                        {
+                            _wallPoint.y = hit.point.y;
+                            SwitchToLedge(targetPos, _wallPoint, _wallNormal);
+
+                        }
+                    }
+
+                    return false;
+                }
+            }
+
+            origin = transform.position + moveDir * dis;
+            dir = helper.forward;
+
+            Debug.DrawRay(origin, dir * 1, Color.blue, 5);
+            if (Physics.Raycast(origin, dir, out hit, 1, ignoreLayer))
             {
                 if (LayerMaskUtility.IsWithinLayerMask(wallLayerMask, hit.collider.gameObject.layer))
                 {
@@ -265,26 +302,6 @@ namespace AH.Max.Gameplay
                 {
                     return false;
                 }
-            }
-            else
-            {
-                //Debug.Log("Look for lesdge");
-
-                //RaycastHit _ledgeHit;
-                //Vector3 _direction = Vector3.down;
-                //Debug.DrawRay(origin + transform.forward, _direction, Color.green, 10);
-                //if (Physics.Raycast(origin + transform.forward, _direction, out _ledgeHit, positionOffSet, ignoreLayer))
-                //{
-                //    Debug.Log("Hits ledge");
-                //    if (LayerMaskUtility.IsWithinLayerMask(ledgeLayerMask, _ledgeHit.collider.gameObject.layer) ||
-                //        LayerMaskUtility.IsWithinLayerMask(wallLayerMask, _ledgeHit.collider.gameObject.layer))
-                //    {
-                //        _wallPoint.y = _ledgeHit.point.y;
-                //        SwitchToLedge(targetPos, _wallPoint, _wallNormal);
-
-                //        return false;
-                //    }
-                //}
             }
 
             return false;
