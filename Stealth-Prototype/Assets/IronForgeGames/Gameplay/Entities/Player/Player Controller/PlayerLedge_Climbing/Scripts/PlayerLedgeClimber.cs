@@ -136,7 +136,10 @@ namespace AH.Max.Gameplay
             playerGroundedComponent = GetComponent<PlayerGroundedComponent>();
             playerStateComponent = GetComponent<PlayerStateComponent>();
             playerLedgeAnimHook = GetComponent<PlayerClimbAnimationController>();
+        }
 
+        private void OnEnable()
+        {
             InputDriver.jumpButtonEvent.AddListener(InputResponse);
             InputDriver.jumpButtonHeldEvent.AddListener(InputResponse);
         }

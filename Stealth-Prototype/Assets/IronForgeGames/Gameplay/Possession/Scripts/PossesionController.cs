@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 using AH.Max.System;
 
 using AH.Max.Gameplay.Camera;
+using AH.Max.Gameplay.System.Components;
 
 namespace AH.Max.Gameplay
 {
@@ -31,7 +32,19 @@ namespace AH.Max.Gameplay
         public Entity currentlyPossessedEntity;
         public bool possessing = false;
 
+        private StateComponent stateComponent;
+
+        public ParticleSystem fx;
+        public List<State> nonusableStates = new List<State>();
         public List <IdentityType> possessableIdentities = new List<IdentityType>();
+
+        private void Start()
+        {
+            if(playerEntity != null)
+            {
+                stateComponent = playerEntity.GetComponentInChildren<StateComponent>();
+            }
+        }
 
         private void OnEnable()
         {
@@ -51,7 +64,10 @@ namespace AH.Max.Gameplay
             {
                 if (!possessing && currentlyPossessedEntity == null && target)
                 {
-                    StartPossessing(target);
+                    if(CanUse())
+                    {
+                        StartPossessing(target);
+                    }
                 }
                 else if(currentlyPossessedEntity != null && possessing)
                 {
@@ -77,6 +93,8 @@ namespace AH.Max.Gameplay
         {
             if(!possessing && currentlyPossessedEntity == null && target)
             {
+                fx.Play();
+
                 GameObject _spawnedPossessed = SpawnManager.Instance.Spawn(GetPossessedIdentity(target.IdentityType));
                 Entity _spawnedEntity = _spawnedPossessed.GetComponent<Entity>();
 
@@ -137,6 +155,11 @@ namespace AH.Max.Gameplay
         public IdentityType GetPossessedIdentity(IdentityType parentOfReturnValue)
         {
             return possessableIdentities.Find(_identity => _identity.parent == parentOfReturnValue);
+        }
+
+        private bool CanUse ()
+        {
+            return !stateComponent.AnyStateTrue(nonusableStates);
         }
     }
 }

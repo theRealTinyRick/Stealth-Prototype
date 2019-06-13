@@ -50,7 +50,7 @@ namespace AH.Max
         {
             base.Disable();
 
-            RemoveInput();
+            //RemoveInput();
         }
 
         private void SetupInput()

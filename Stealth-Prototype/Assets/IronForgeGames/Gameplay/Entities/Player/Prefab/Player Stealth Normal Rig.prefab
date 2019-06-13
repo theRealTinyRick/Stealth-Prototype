@@ -4510,8 +4510,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8098380433312970081}
-  - {fileID: 8098380433314466035}
   - {fileID: 8098380433499909075}
+  - {fileID: 8098380433314466035}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4541,7 +4541,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8098380433092934013}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.98409003, y: 2.92, z: -5.187482}
+  m_LocalPosition: {x: 0.98409027, y: 2.92, z: -5.187482}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8098380433725795454}
@@ -4708,8 +4708,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8098380433154292225}
-  m_LocalRotation: {x: 0.09148277, y: -0.09320531, z: 0.008600664, w: 0.99139786}
-  m_LocalPosition: {x: 0.98409003, y: 2.92, z: -5.187482}
+  m_LocalRotation: {x: 0.09148278, y: -0.09320533, z: 0.008600666, w: 0.99139786}
+  m_LocalPosition: {x: 0.98409027, y: 2.92, z: -5.187482}
   m_LocalScale: {x: 1.333333, y: 1.3333336, z: 1.3333333}
   m_Children: []
   m_Father: {fileID: 8098380433314466035}
@@ -4911,10 +4911,10 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 
-    - Name: 
+    - Name: $k
       Entry: 3
       Data: 0
-    - Name: 
+    - Name: $v
       Entry: 6
       Data: 
     - Name: 
@@ -4991,10 +4991,10 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 
-    - Name: 
+    - Name: $k
       Entry: 10
       Data: 0
-    - Name: 
+    - Name: $v
       Entry: 7
       Data: 2|WeaponInfo, Assembly-CSharp
     - Name: eqippedAnimation
@@ -5015,10 +5015,10 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 
-    - Name: 
+    - Name: $k
       Entry: 10
       Data: 1
-    - Name: 
+    - Name: $v
       Entry: 7
       Data: 3|WeaponInfo, Assembly-CSharp
     - Name: eqippedAnimation
@@ -5327,10 +5327,10 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 
-    - Name: 
+    - Name: $k
       Entry: 10
       Data: 0
-    - Name: 
+    - Name: $v
       Entry: 5
       Data: false
     - Name: 
@@ -5339,10 +5339,10 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 
-    - Name: 
+    - Name: $k
       Entry: 10
       Data: 1
-    - Name: 
+    - Name: $v
       Entry: 5
       Data: false
     - Name: 
@@ -5351,10 +5351,10 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 
-    - Name: 
+    - Name: $k
       Entry: 10
       Data: 2
-    - Name: 
+    - Name: $v
       Entry: 5
       Data: false
     - Name: 
@@ -5363,10 +5363,10 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 
-    - Name: 
+    - Name: $k
       Entry: 10
       Data: 3
-    - Name: 
+    - Name: $v
       Entry: 5
       Data: false
     - Name: 
@@ -5375,10 +5375,10 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 
-    - Name: 
+    - Name: $k
       Entry: 10
       Data: 4
-    - Name: 
+    - Name: $v
       Entry: 5
       Data: false
     - Name: 
@@ -5387,10 +5387,10 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 
-    - Name: 
+    - Name: $k
       Entry: 10
       Data: 5
-    - Name: 
+    - Name: $v
       Entry: 5
       Data: false
     - Name: 
@@ -5399,10 +5399,10 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 
-    - Name: 
+    - Name: $k
       Entry: 10
       Data: 6
-    - Name: 
+    - Name: $v
       Entry: 5
       Data: false
     - Name: 
@@ -5411,10 +5411,10 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 
-    - Name: 
+    - Name: $k
       Entry: 10
       Data: 7
-    - Name: 
+    - Name: $v
       Entry: 5
       Data: false
     - Name: 
@@ -5423,10 +5423,10 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 
-    - Name: 
+    - Name: $k
       Entry: 10
       Data: 8
-    - Name: 
+    - Name: $v
       Entry: 5
       Data: false
     - Name: 
@@ -5435,10 +5435,10 @@ MonoBehaviour:
     - Name: 
       Entry: 7
       Data: 
-    - Name: 
+    - Name: $k
       Entry: 10
       Data: 9
-    - Name: 
+    - Name: $v
       Entry: 5
       Data: false
     - Name: 
@@ -6302,7 +6302,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8098380433314465997}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.07, z: 0}
+  m_LocalPosition: {x: 0, y: 0.07000017, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8098380433092933987}
@@ -6310,7 +6310,7 @@ Transform:
   - {fileID: 8098380431989180642}
   - {fileID: 8098380433848445099}
   m_Father: {fileID: 8098380432438847282}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8098380433314466034
 MonoBehaviour:
@@ -6405,11 +6405,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8098380433499909074}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.8748426, y: 1.2902771, z: -0.29209954}
+  m_LocalPosition: {x: -1.8748426, y: 1.290277, z: -0.292099}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8098380432438847282}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8098380433499909072
 MonoBehaviour:
@@ -6457,7 +6457,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8098380433641479042}
-  m_LocalRotation: {x: 0.09148281, y: -0.09320524, z: 0.008600154, w: 0.9913979}
+  m_LocalRotation: {x: 0.09148282, y: -0.093205266, z: 0.008600157, w: 0.9913979}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -6533,7 +6533,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8098380433675182684}
-  m_LocalRotation: {x: 0.07348221, y: -0.09334605, z: 0.006909347, w: 0.99289435}
+  m_LocalRotation: {x: 0.07348222, y: -0.09334608, z: 0.0069093513, w: 0.99289435}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -6609,7 +6609,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8098380433725795449}
-  m_LocalRotation: {x: 0.10950063, y: -0.09303342, z: 0.0102946265, w: 0.98956984}
+  m_LocalRotation: {x: 0.10950064, y: -0.09303348, z: 0.010294633, w: 0.98956984}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:

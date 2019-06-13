@@ -2,9 +2,3 @@ sceneSetups:
 - path: Assets/IronForgeGames/Sandbox/Aaron/Foundry.unity
   isLoaded: 1
   isActive: 1
-- path: Assets/IronForgeGames/System/GameResources/Scenes/Resources.unity
-  isLoaded: 1
-  isActive: 0
-- path: Assets/IronForgeGames/Gameplay/GameLevels/Test Arenas/Test Arena/Test Arena.unity
-  isLoaded: 0
-  isActive: 0
