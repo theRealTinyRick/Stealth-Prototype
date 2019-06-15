@@ -83,19 +83,29 @@ namespace AH.Max.Gameplay
             playerClimbAnimationController = GetComponent<PlayerClimbAnimationController>();
         }
 
+        bool holdingInput = false;
+
         /// <summary>
         /// Called from input events in the inspector
         /// </summary>
-        public void Action()
+        public void HeldInput()
         {
             if(!isClimbing)
             {
                 CheckForClimb();
             }
-            else if(isClimbing && inPosition && !isLerping)
+
+            holdingInput = true;
+        }
+
+        public void ReleasedInput()
+        {
+            if (isClimbing && inPosition && !isLerping && InputDriver.LocomotionDirection.z < 0)
             {
                 Drop();
             }
+
+            holdingInput = false;
         }
 
         private bool CheckForClimb()
@@ -163,7 +173,7 @@ namespace AH.Max.Gameplay
                 Vector3 vertical = helper.up * verticalInput;
                 Vector3 moveDir = (horizontal + vertical).normalized;
 
-                if (!playerClimbAnimationController.IsInState(PlayerClimbAnimationController.Idle) || moveDir == Vector3.zero || !CanMove(moveDir))
+                if (!playerClimbAnimationController.IsInState(PlayerClimbAnimationController.Idle) || moveDir == Vector3.zero || !CanMove(moveDir) || holdingInput)
                 {
                     return;
                 }
@@ -208,8 +218,11 @@ namespace AH.Max.Gameplay
             Debug.DrawRay(origin, transform.forward, Color.red);
             if(Physics.Raycast(origin, transform.forward, out hit, 1, ignoreLayer))
             {
-                _wallPoint = hit.point;
-                _wallNormal = hit.normal;
+                if(LayerMaskUtility.IsWithinLayerMask(wallLayerMask, hit.collider.gameObject.layer))
+                {
+                    _wallPoint = hit.point;
+                    _wallNormal = hit.normal;
+                }
             }
             else
             {
@@ -221,9 +234,12 @@ namespace AH.Max.Gameplay
             {
                 if(LayerMaskUtility.IsWithinLayerMask(wallLayerMask, hit.collider.gameObject.layer))
                 {
-                    helper.position = PosWithOffset(origin, hit.point);
-                    helper.rotation = Quaternion.LookRotation(-hit.normal);
-                    return true;
+                    if(CheckWallSlope(hit))
+                    {
+                        helper.position = PosWithOffset(origin, hit.point);
+                        helper.rotation = Quaternion.LookRotation(-hit.normal);
+                        return true;
+                    }
                 }
                 else if(LayerMaskUtility.IsWithinLayerMask(ledgeLayerMask, hit.collider.gameObject.layer))
                 {
@@ -263,7 +279,7 @@ namespace AH.Max.Gameplay
 
             if (!Physics.Raycast(origin, moveDir, 3, ignoreLayer))
             {
-                origin += moveDir * (dis * 3);
+                origin += moveDir * (dis * 2);
 
                 // check for ledge
                 Debug.DrawRay(origin, helper.forward * 1, Color.blue, 5);
@@ -278,11 +294,10 @@ namespace AH.Max.Gameplay
                         {
                             _wallPoint.y = hit.point.y;
                             SwitchToLedge(targetPos, _wallPoint, _wallNormal);
+                            return false;
 
                         }
                     }
-
-                    return false;
                 }
             }
 
@@ -294,14 +309,30 @@ namespace AH.Max.Gameplay
             {
                 if (LayerMaskUtility.IsWithinLayerMask(wallLayerMask, hit.collider.gameObject.layer))
                 {
-                    helper.position = PosWithOffset(origin, hit.point);
-                    helper.rotation = Quaternion.LookRotation(-hit.normal);
-                    return true;
+                    if(CheckWallSlope(hit))
+                    {
+                        helper.position = PosWithOffset(origin, hit.point);
+                        helper.rotation = Quaternion.LookRotation(-hit.normal);
+                        return true;
+                    }
                 }
                 else
                 {
                     return false;
                 }
+            }
+
+            return false;
+        }
+
+        //Checks the slope of the wall we want to vault/ climb over
+        private bool CheckWallSlope(RaycastHit hit)
+        {
+            float _angle = Vector3.Angle(hit.normal, Vector3.up);
+
+            if (_angle >= 85)
+            {
+                return true;
             }
 
             return false;
@@ -359,13 +390,18 @@ namespace AH.Max.Gameplay
         public void Drop()
         {
             rigidbody.isKinematic = false;
+            StopClimbing();
+            playerClimbAnimationController.Dismount();
+        }
+
+        public void StopClimbing()
+        {
             isClimbing = false;
             inPosition = false;
             isLerping = false;
 
             wallClimbingEndedEvent.Invoke();
 
-            playerClimbAnimationController.Dismount();
         }
     }
 }

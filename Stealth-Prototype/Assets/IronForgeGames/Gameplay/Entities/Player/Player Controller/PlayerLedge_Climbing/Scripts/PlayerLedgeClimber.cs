@@ -74,6 +74,10 @@ namespace AH.Max.Gameplay
         [SerializeField]
         private LayerMask wallLayerMask;
 
+        [TabGroup(Tabs.Properties)]
+        [SerializeField]
+        private LayerMask ignoreMask;
+
         [TabGroup("Climb Up Ledge")]
         [SerializeField]
         private float animationMatchTargetTime;
@@ -98,6 +102,14 @@ namespace AH.Max.Gameplay
         [TabGroup("Climb Up Ledge")]
         [SerializeField]
         private float climbUpRightOffset;
+
+        [TabGroup("Climb Up Ledge")]
+        [SerializeField]
+        private float climbUpUpwardOffset;
+
+        [TabGroup(Tabs.Properties)]
+        [SerializeField]
+        private float cornerOffset;
 
         [TabGroup(Tabs.Events)]
         [SerializeField]
@@ -131,6 +143,8 @@ namespace AH.Max.Gameplay
         private void Start()
         {
             ledge = Vector3.zero;
+
+            ignoreMask = ~ignoreMask;
 
             _rigidbody = GetComponent<Rigidbody>();
             playerGroundedComponent = GetComponent<PlayerGroundedComponent>();
@@ -249,12 +263,12 @@ namespace AH.Max.Gameplay
                 playerLedgeAnimHook.PlayClimbUpAnimation();
 
                 Animator _animator = GetComponent<Animator>();
-                Vector3 position = climbUpPosition + (transform.forward * climbUpForwardOffset) + (transform.right * climbUpRightOffset);
+                Vector3 _position = climbUpPosition + (transform.forward * climbUpForwardOffset) + (transform.right * climbUpRightOffset) + (Vector3.up * climbUpUpwardOffset);
                 float _time = 0;
 
                 while (_time < animationMatchTargetTime)
                 {
-                    AnimatorUtilites.MatchTarget(_animator, HumanBodyBones.RightHand, "Ledge_Hang_ToStand_Up", transform, position, transform.rotation, 0, animationMatchTargetEndTime, animationMatchTargetSpeed);
+                    AnimatorUtilites.MatchTarget(_animator, HumanBodyBones.RightHand, "Ledge_Hang_ToStand_Up", transform, _position, transform.rotation, 0, animationMatchTargetEndTime, animationMatchTargetSpeed);
                     _time += Time.deltaTime;
                     yield return null;
                 }
@@ -283,13 +297,13 @@ namespace AH.Max.Gameplay
             RaycastHit _hitResult;
 
             Debug.DrawRay(_rayCastOrigin, transform.forward, Color.red, 5);
-            if(Physics.Raycast(_rayCastOrigin, transform.forward, out _hitResult, 1/*, layerMask*/))
+            if(Physics.Raycast(_rayCastOrigin, transform.forward, out _hitResult, 1, ignoreMask))
             {
                 if(LayerMaskUtility.IsWithinLayerMask(ledgeLayerMask, _hitResult.collider.gameObject.layer))
                 {
                     _rayCastOrigin += Vector3.up * maxMountHeight;
                     Debug.DrawRay(_rayCastOrigin, transform.forward * 2, Color.blue, 5);
-                    if(!Physics.Raycast(_rayCastOrigin, transform.forward, 2))
+                    if(!Physics.Raycast(_rayCastOrigin, transform.forward, 2, ignoreMask))
                     {
                         _normal = _hitResult.normal;
                         _horizontaHit = _hitResult.point;
@@ -297,7 +311,7 @@ namespace AH.Max.Gameplay
                         _rayCastOrigin = _hitResult.point + Vector3.up * maxMountHeight + transform.forward * 0.2f;
 
                         Debug.DrawRay(_rayCastOrigin, Vector3.down, Color.red, 5);
-                        if(Physics.Raycast(_rayCastOrigin, Vector3.down, out _hitResult, 10/*, layerMask*/))
+                        if(Physics.Raycast(_rayCastOrigin, Vector3.down, out _hitResult, 10, ignoreMask))
                         {
                             // float _floorHit = _hitResult.point.y;
                             // float _ledgeHeight = wallFinder.Ledge.y;
@@ -366,11 +380,11 @@ namespace AH.Max.Gameplay
             if(isInPosition && isClimbing && InputDriver.LocomotionDirection.x != 0 && IsAtNextClimbPoint() && !isClimbingUp && IsPlayerInTheIdleState())
             {
                 Vector3 _origin = transform.position;
-                _origin.y += 1f;
+                _origin.y += 0.5f;
 
                 RaycastHit _hit;
                 Debug.DrawRay(_origin, transform.forward, Color.green, 10);
-                if (Physics.Raycast(_origin, transform.forward, out _hit, distanceToCheck))
+                if (Physics.Raycast(_origin, transform.forward, out _hit, distanceToCheck, ignoreMask))
                 {
                     if (LayerMaskUtility.IsWithinLayerMask(ledgeLayerMask, _hit.collider.gameObject.layer))
                     {
@@ -393,19 +407,22 @@ namespace AH.Max.Gameplay
 
                             bool _useObstical = false;
 
-                            if (Physics.Raycast(_origin, _obsticalDirection, out _hit, ledgeClimbDistance + 0.5f))
+                            if (Physics.Raycast(_origin, _obsticalDirection, out _hit, ledgeClimbDistance + 0.5f, ignoreMask))
                             {
                                 if(LayerMaskUtility.IsWithinLayerMask(wallLayerMask, _hit.collider.gameObject.layer))
                                 {
-                                    SwitchToWall(ledge, _hit.point, _hit.normal, horizontalInput);
+                                    SwitchToWall(ledge, _hit.point + Vector3.up * 0.5f, _hit.normal, horizontalInput);
                                     return;
                                 }
                                 else
                                 {
-                                    if(CheckWallSlope(_hit))
+                                    if(LayerMaskUtility.IsWithinLayerMask(ledgeLayerMask, _hit.collider.gameObject.layer))
                                     {
-                                        _useObstical = true;
+                                        GetLedgeFromWall(_hit, _distanceToCheckDown);
+                                        playerLedgeAnimHook.PlayLedgeMoveAnimation(LedgeWithPlayerOffset(ledge), horizontalInput);
+                                        return;
                                     }
+                                    _useObstical = true;
                                 }
                             }
 
@@ -422,30 +439,87 @@ namespace AH.Max.Gameplay
 
                             _origin = _targetOrigin;
 
-                            if (Physics.Raycast(_origin, _obsticalDirection, out _hit, distanceToCheck + 1))
+                            if (Physics.Raycast(_origin, _obsticalDirection, out _hit, distanceToCheck, ignoreMask))
                             {
-                                Vector3 _ledge = _hit.point;
-                                Vector3 _normal = _hit.normal;
-
-                                _origin = _hit.point;
-                                _origin.y += maxLedgeShimyHeight;
-                                _origin += -_normal * _distanceToCheckDown;
-
-                                if (Physics.Raycast(_origin, Vector3.down, out _hit, maxLedgeShimyHeight))
+                                if (LayerMaskUtility.IsWithinLayerMask(ledgeLayerMask, _hit.collider.gameObject.layer))
                                 {
-                                   _ledge.y = _hit.point.y;
+                                    GetLedgeFromWall(_hit, _distanceToCheckDown);
+                                    playerLedgeAnimHook.PlayLedgeMoveAnimation(LedgeWithPlayerOffset(ledge), horizontalInput);
+                                    return;
+                                }
+                                else if(LayerMaskUtility.IsWithinLayerMask(wallLayerMask, _hit.collider.gameObject.layer))
+                                {
+                                    SwitchToWall(ledge, _hit.point + Vector3.up * 0.5f, _hit.normal, horizontalInput);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                _origin = transform.position + Vector3.up * 0.5f + (transform.right * (horizontalInput));
+                                Debug.DrawRay(_origin, _obsticalDirection, color: Color.red, 100);
 
-                                   if (CheckFloorSlope(_hit))
-                                   {
-                                        SetLedge(_ledge, _normal);
-
+                                if (Physics.Raycast(_origin, _obsticalDirection, out _hit, 1, ignoreMask))
+                                {
+                                    if(LayerMaskUtility.IsWithinLayerMask(ledgeLayerMask, _hit.collider.gameObject.layer))
+                                    {
+                                        GetLedgeFromWall(_hit, _distanceToCheckDown);
                                         playerLedgeAnimHook.PlayLedgeMoveAnimation(LedgeWithPlayerOffset(ledge), horizontalInput);
                                         return;
-                                   }
+                                    }
+                                    else if (LayerMaskUtility.IsWithinLayerMask(wallLayerMask, _hit.collider.gameObject.layer))
+                                    {
+                                        SwitchToWall(ledge, _hit.point + Vector3.up * 0.5f, _hit.normal, horizontalInput);
+                                        return;
+                                    }
+                                }
+                                else 
+                                {
+                                    _origin += _obsticalDirection * cornerOffset;
+                                    _obsticalDirection = transform.right * -horizontalInput;
+                                    Debug.DrawRay(_origin, _obsticalDirection * 2, Color.blue, 100);
+
+                                    if (Physics.Raycast(_origin, _obsticalDirection, out _hit, 2, ignoreMask))
+                                    {
+                                        if(LayerMaskUtility.IsWithinLayerMask(ledgeLayerMask, _hit.collider.gameObject.layer))
+                                        {
+                                            if(CheckWallSlope(_hit))
+                                            {
+                                                GetLedgeFromWall(_hit, _distanceToCheckDown);
+                                                playerLedgeAnimHook.PlayCornerOut(horizontalInput);
+                                                return;
+                                            }
+                                        }
+                                        else if (LayerMaskUtility.IsWithinLayerMask(wallLayerMask, _hit.collider.gameObject.layer))
+                                        {
+                                            SwitchToWall(ledge, _hit.point + Vector3.up * 0.5f, _hit.normal, horizontalInput);
+                                            return;
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
+                }
+            }
+        }
+
+        private void GetLedgeFromWall(RaycastHit _hit, float _distanceToCheckDown)
+        {
+            Vector3 _ledge = _hit.point;
+            Vector3 _normal = _hit.normal;
+
+            Vector3 _origin = _hit.point;
+            _origin.y += maxLedgeShimyHeight;
+            _origin += -_normal * _distanceToCheckDown;
+
+            if (Physics.Raycast(_origin, Vector3.down, out _hit, maxLedgeShimyHeight, ignoreMask))
+            {
+                _ledge.y = _hit.point.y;
+
+                if (CheckFloorSlope(_hit))
+                {
+                    SetLedge(_ledge, _normal);
+                    return;
                 }
             }
         }

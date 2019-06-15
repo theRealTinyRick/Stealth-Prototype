@@ -12,6 +12,8 @@ using Sirenix.OdinInspector;
 
 using UnityEngine;
 
+using AH.Max.Gameplay.System.Components;
+
 namespace AH.Max.Gameplay.Stealth
 {
     public enum StealthMode
@@ -34,7 +36,7 @@ namespace AH.Max.Gameplay.Stealth
 
         [TabGroup(Tabs.Properties)]
         [SerializeField]
-        private LayerMask stealthObstacleLayerMask;
+        private LayerMask obstacleLayer;
         
         [TabGroup(Tabs.Events)]
         [SerializeField]
@@ -47,15 +49,37 @@ namespace AH.Max.Gameplay.Stealth
         public StealthObstacle currentStealthObstacle{get; set;}
 
         private bool isInStealthMode = false;
+        public bool IsInStealthMode
+        {
+            get
+            {
+                return isInStealthMode;
+            }
+        }
+
+        private bool isPeeking = false;
+        public bool IsPeeking
+        {
+            get
+            {
+                return isPeeking;
+            }
+        }
 
         private List <StealthObstacle> stealthObstacles = new List<StealthObstacle>();
 
+        [SerializeField]
+        [TabGroup(Tabs.Properties)]
+        private List<State> statesCannotEnterStealth = new List<State>();
+
         // components
         private Animator animator;
+        private StateComponent stateComponent;
 
         void Start()
         {
             animator = GetComponent<Animator>();
+            stateComponent = GetComponentInChildren<StateComponent>();
         }
 
         private void Update()
@@ -71,23 +95,38 @@ namespace AH.Max.Gameplay.Stealth
                     InitStealthMode();
                 }
             }
+
+
+
+            if(Input.GetKeyDown(KeyCode.F))
+            {
+                Peek();
+            }
+            
+            if(Input.GetKeyUp(KeyCode.F))
+            {
+                StopPeeking();
+            }
         }
 
         public void OnTriggerEnter(Collider other)
         {
-            if(LayerMaskUtility.IsWithinLayerMask(stealthObstacleLayerMask, other.gameObject.layer))
+            if(LayerMaskUtility.IsWithinLayerMask(obstacleLayer, other.gameObject.layer))
             {
                 StealthObstacle _stealthObstacle = other.GetComponentInChildren<StealthObstacle>();
                 if(_stealthObstacle != null)
                 {
-                    stealthObstacles.Add(_stealthObstacle);
+                    if(!stealthObstacles.Contains(_stealthObstacle))
+                    {
+                        stealthObstacles.Add(_stealthObstacle);
+                    }
                 }
             }    
         }
         
         public void OnTriggerExit(Collider other)
         {
-            if(LayerMaskUtility.IsWithinLayerMask(stealthObstacleLayerMask, other.gameObject.layer))
+            if(LayerMaskUtility.IsWithinLayerMask(obstacleLayer, other.gameObject.layer))
             {
                 StealthObstacle _stealthObstacle = other.GetComponentInChildren<StealthObstacle>();
                 if(_stealthObstacle != null)
@@ -97,12 +136,20 @@ namespace AH.Max.Gameplay.Stealth
             }    
         }
 
+        private bool CanEnterStealth()
+        {
+            return !stateComponent.AnyStateTrue(statesCannotEnterStealth);
+        }
+
         public void InitStealthMode()
         {
-            StealthObstacle _stealthObstacle = FindBestStealthObstacle();
-            if(_stealthObstacle != null)
+            if(CanEnterStealth())
             {
-                EnterStealthMode(_stealthObstacle);
+                StealthObstacle _stealthObstacle = FindBestStealthObstacle();
+                if(_stealthObstacle != null)
+                {
+                    EnterStealthMode(_stealthObstacle);
+                }
             }
         }
 
@@ -134,12 +181,43 @@ namespace AH.Max.Gameplay.Stealth
         public void ExitStealthMode()
         {
             isInStealthMode = false;
+            isPeeking = false;
             animator.SetBool("IsCrouching", false);
 
             if(stealthModeExitedEvent != null)
             {
                 stealthModeExitedEvent.Invoke();
             }
+        }
+
+        public void Peek()
+        {
+            if(isInStealthMode /* && is the right kind of stealth*/ &&  CanPeek())
+            {
+                isPeeking = true;
+            }
+        }
+
+        public void StopPeeking()
+        {
+            if(isInStealthMode)
+            {
+                isPeeking = false;
+            }
+        }
+
+        private bool CanPeek()
+        {
+            if(currentStealthObstacle != null)
+            {
+
+                float _distance = Vector3Utility.PlanarDistance(transform.position, currentStealthObstacle.GetClosestEdge(transform.position));
+                if (_distance < 0.72f)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         
         IEnumerator GetIntoPosition(Vector3 position, Quaternion rotation)
@@ -172,6 +250,16 @@ namespace AH.Max.Gameplay.Stealth
                 return _closest;
             }
             return null;
+        }
+
+        public Vector3 GetPeekPosition (float offsetAmount)
+        {
+            Vector3 _farthest = currentStealthObstacle.GetFarthestEdge(transform.position);
+            Vector3 _closest = currentStealthObstacle.GetClosestEdge(transform.position);
+
+            Debug.DrawRay(transform.position, _closest - _farthest, Color.blue, 100);
+
+            return transform.position + ((_closest - _farthest).normalized * offsetAmount);
         }
     }
 }

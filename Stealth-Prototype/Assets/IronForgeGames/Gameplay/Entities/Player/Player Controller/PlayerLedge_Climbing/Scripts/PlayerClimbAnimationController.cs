@@ -15,6 +15,15 @@ public class PlayerClimbAnimationController : MonoBehaviour
 
     public const string Idle = "ClimbIdle";
 
+    public const string VERTICAL = "Vertical";
+    public const string HORIZONTAL = "Horizontal";
+
+    public const string CLIMB_UP = "ClimbUp";
+
+    public const string CORNER_DIRECTION = "CornerDirection";
+    public const string CORNER_IN = "CornerIn";
+    public const string CORNER_OUT = "CornerOut";
+
     private Animator animator;
 
 	private void Start ()
@@ -63,10 +72,28 @@ public class PlayerClimbAnimationController : MonoBehaviour
      
     public void PlayClimbUpAnimation()
     {
-        animator.SetFloat("Vertical", 0);
-        animator.SetFloat("Horizontal", 0);
+        animator.SetFloat(HORIZONTAL, 0);
+        animator.SetFloat(VERTICAL, 0);
 
-        animator.SetTrigger("ClimbUp");
+        animator.SetTrigger(CLIMB_UP);
+    }
+
+    public void PlayCornerIn(float direction)
+    {
+        SetCornerDirection(direction);
+        animator.Play(CORNER_IN);
+    }
+
+    public void PlayCornerOut(float direction)
+    {
+        SetCornerDirection(direction);
+        animator.Play(CORNER_OUT);
+    }
+
+    private void SetCornerDirection(float direction)
+    {
+        if (direction < 0) direction = 0;
+        animator.SetFloat(CORNER_DIRECTION, direction);
     }
 
     public void Dismount()

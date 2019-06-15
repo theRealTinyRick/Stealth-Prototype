@@ -3,8 +3,9 @@
 using UnityEngine;
 
 using Sirenix.OdinInspector;
-
 using Cinemachine;
+
+using AH.Max.Gameplay.Stealth;
 
 namespace AH.Max.Gameplay.Camera
 {
@@ -70,6 +71,16 @@ namespace AH.Max.Gameplay.Camera
         [SerializeField]
         private StateData climbingStateData;
 
+        private PlayerStealthController stealthController;
+
+        [TabGroup("Stealth")]
+        [SerializeField]
+        private Vector3 stealthCameraOffset;
+
+        [TabGroup("Stealth")]
+        [SerializeField]
+        private float peakingCameraOffsetAmount;
+
         private const string MouseX = "Mouse X";
         private const string MouseY = "Mouse Y";
 
@@ -77,15 +88,9 @@ namespace AH.Max.Gameplay.Camera
         {
             SetCameraTarget(AH.Max.System.EntityManager.Instance.Player.transform);
 
-            if (entity == null)
-            {
-                entity = transform.root.GetComponentInChildren<Entity>();
-            }
-
-            if (targetingManager == null)
-            {
-                targetingManager = transform.root.GetComponentInChildren<TargetingManager>();
-            }
+            entity = transform.root.GetComponentInChildren<Entity>();
+            targetingManager = transform.root.GetComponentInChildren<TargetingManager>();
+            stealthController = entity.GetComponentInChildren<PlayerStealthController>();
         }
 
         public void LateUpdate()
@@ -132,6 +137,45 @@ namespace AH.Max.Gameplay.Camera
                         return;
                     }
                 }
+                else if(stealthController.IsInStealthMode && stealthController.currentStealthObstacle != null)
+                {
+                    cm_cameraController.m_XAxis.m_InputAxisName = "";
+                    cm_cameraController.m_YAxis.m_InputAxisName = "";
+
+                    cm_cameraController.m_XAxis.m_InputAxisValue = 0;
+                    cm_cameraController.m_YAxis.m_InputAxisValue = 0;
+
+                    cm_cameraController.m_RecenterToTargetHeading.m_enabled = true;
+                    cm_cameraController.m_YAxisRecentering.m_enabled = true;
+
+                    Vector3 _targetDirection = stealthController.currentStealthObstacle.orientation.forward;
+                    Quaternion _targetRotation = Quaternion.LookRotation(_targetDirection);
+
+                    cm_cameraController.m_BindingMode = CinemachineTransposer.BindingMode.WorldSpace;
+
+                    cameraFollow.rotation = _targetRotation;
+
+                    cm_cameraController.m_RecenterToTargetHeading.m_WaitTime = lockedOnStateData.recenterDelay;
+                    cm_cameraController.m_YAxisRecentering.m_WaitTime = lockedOnStateData.recenterDelay;
+
+                    cm_cameraController.m_RecenterToTargetHeading.m_RecenteringTime = lockedOnStateData.recenterTime;
+                    cm_cameraController.m_YAxisRecentering.m_RecenteringTime = lockedOnStateData.recenterTime;
+
+                    if (stealthController.IsPeeking)
+                    {
+                        //Vector3[] _offset = stealthController.GetPeekPosition();
+                        //Debug.DrawRay(_offset[0], _offset[1], color: Color.blue, 100);
+                        cameraFollow.position = Vector3.Lerp(cameraFollow.position, stealthController.GetPeekPosition(peakingCameraOffsetAmount) + Vector3.up + stealthController.currentStealthObstacle.orientation.forward * 2, 0.5f);
+                        cameraLookAt.position = Vector3.Lerp(cameraLookAt.position, cameraFollow.position + stealthController.currentStealthObstacle.orientation.forward * 2, 0.5f);
+                    }
+                    else
+                    {
+                        cameraFollow.position = currentCameraTarget.position;
+                        cameraLookAt.position = currentCameraTarget.position + (Vector3.up * 2);
+                    }
+
+                    return;
+                }
                 /*
                 else if(playerLedgeFinder.IsClimbing)
                 {
@@ -156,7 +200,6 @@ namespace AH.Max.Gameplay.Camera
                 }
                 */
                 // reset the data
-
                 cameraFollow.position = currentCameraTarget.position;
                 cameraLookAt.position = currentCameraTarget.position + (Vector3.up * 2);
 

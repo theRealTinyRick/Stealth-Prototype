@@ -46,11 +46,18 @@ namespace AH.Max.Gameplay.Stealth
            Move();
        }
 
+        private void UpdateOrientation()
+        {
+            Transform _orientation = playerStealthController.currentStealthObstacle.orientation;
+            _orientation.position = transform.position;
+        }
+
        private void Move()
        {
            if(IsInStealthMode())
            {
                 Vector3 _moveDirection = playerLocomotion.GetOrientationDirection();
+                UpdateOrientation();
 
                 if(_moveDirection.magnitude > 0)
                 {

@@ -14,6 +14,12 @@ public class Vector3Utility
         return (_ref.x * _ref.x) + (_ref.y * _ref.y) + (_ref.z + _ref.z);
     }
 
+    public static float PlanarDistance(Vector3 to, Vector3 from)
+    {
+        to.y = from.y;
+        return Vector3.Distance(to, from);
+    }
+
     public static bool Approximately()
     {
         return false;

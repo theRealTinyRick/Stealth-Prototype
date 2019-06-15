@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,11 +11,13 @@ using AH.Max.Gameplay.System.Components;
 
 namespace AH.Max.Gameplay
 {
+    [Serializable]
     public class PossessionStartedEvent : UnityEngine.Events.UnityEvent<Entity>
     {
     }
 
-    public class PossessionEndedEvent : UnityEngine.Events.UnityEvent<Entity>
+    [Serializable]
+    public class PossessionEndedEvent : UnityEngine.Events.UnityEvent
     {
     }
 
@@ -36,6 +39,9 @@ namespace AH.Max.Gameplay
 
         public List<State> nonusableStates = new List<State>();
         public List <IdentityType> possessableIdentities = new List<IdentityType>();
+
+        public PossessionStartedEvent possessionStartedEvent = new PossessionStartedEvent();
+        public PossessionEndedEvent possessionEndedEvent = new PossessionEndedEvent();
 
         private void Start()
         {
@@ -114,6 +120,7 @@ namespace AH.Max.Gameplay
                     if(_spawnedEntity != null)
                     {
                         currentlyPossessedEntity = _spawnedEntity;
+                        possessionStartedEvent.Invoke(currentlyPossessedEntity);
                     }
                 }
             }
@@ -145,6 +152,8 @@ namespace AH.Max.Gameplay
                     possessing = false;
                     currentlyPossessedEntity = null;
                     target = null;
+
+                    possessionEndedEvent.Invoke();
                 }
             }
         }

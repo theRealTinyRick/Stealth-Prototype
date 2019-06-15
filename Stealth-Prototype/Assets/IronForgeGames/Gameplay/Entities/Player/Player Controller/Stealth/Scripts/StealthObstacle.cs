@@ -43,6 +43,10 @@ namespace AH.Max.Gameplay.Stealth
 
         [TabGroup(Tabs.Properties)]
         [SerializeField]
+        public Transform orientation;
+
+        [TabGroup(Tabs.Properties)]
+        [SerializeField]
         public StealthObsacleType stealthObsacleType;
 
         [TabGroup(Tabs.Properties)]

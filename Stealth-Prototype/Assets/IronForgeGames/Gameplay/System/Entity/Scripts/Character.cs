@@ -17,6 +17,10 @@ namespace AH.Max
 
         [TabGroup(Tabs.InputEvents)]
         [SerializeField]
+        public JumpButtonEvent jumpButtonHeld = new JumpButtonEvent();
+
+        [TabGroup(Tabs.InputEvents)]
+        [SerializeField]
         public JumpButtonEvent jumpButtonReleased = new JumpButtonEvent();
 
         [TabGroup(Tabs.InputEvents)]
@@ -57,6 +61,7 @@ namespace AH.Max
         {
             InputDriver.jumpButtonEvent.AddListener(jumpButtonPressed.Invoke);
             InputDriver.jumpButtonReleasedEvent.AddListener(jumpButtonReleased.Invoke);
+            InputDriver.jumpButtonHeldEvent.AddListener(jumpButtonHeld.Invoke);
             InputDriver.lightAttackButtonEvent.AddListener(lightAttackPressed.Invoke);
             InputDriver.preparedInputPressedEvent.AddListener(preparedPressed.Invoke);
             InputDriver.preparedInputReleasedEvent.AddListener(preparedReleased.Invoke);
@@ -68,6 +73,7 @@ namespace AH.Max
         {
             InputDriver.jumpButtonEvent.RemoveListener(jumpButtonPressed.Invoke);
             InputDriver.jumpButtonReleasedEvent.RemoveListener(jumpButtonReleased.Invoke);
+            InputDriver.jumpButtonHeldEvent.RemoveListener(jumpButtonHeld.Invoke);
             InputDriver.lightAttackButtonEvent.RemoveListener(lightAttackPressed.Invoke);
             InputDriver.preparedInputPressedEvent.RemoveListener(preparedPressed.Invoke);
             InputDriver.preparedInputReleasedEvent.RemoveListener(preparedReleased.Invoke);
